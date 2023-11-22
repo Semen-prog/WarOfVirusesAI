@@ -1,41 +1,48 @@
 import torch
 import numpy as np
-from wovenv.venv.state import N, M
+from wovenv.venv.state import N, M, MAX_TURN
 from wovenv.venv.snapshot import SnapShot, Action
 
-def form_data(data: list[SnapShot]) -> torch.Tensor:
-    res = []
-    for s in data:
-        res.append(np.hstack([np.array([[float(s.table[i][j].value) for j in range(M)] for i in range(N)]).reshape(N * M), np.array([s.turn])]))
-    return torch.tensor(np.vstack(res), dtype=torch.float32)
+def form_data(data: SnapShot) -> torch.Tensor:
+    res = torch.zeros(1, 5, N, M)
+    for i in range(N):
+        for j in range(M):
+            res[0][data.table[i][j].value][i][j] = 1.
+    return res
 
 def form_index(a: Action):
     return (a.i * M + a.j) * 2 + int(a.change)
 
-inp = N * M + 1
+inp = N * M * 5
 out = N * M * 2
 
 class PolicyNet:
 
     def __init__(self, learning_rate=0.5, discount=1) -> None:
-        self.model = torch.nn.Sequential(
-            torch.nn.Linear(inp, 100),
-            torch.nn.ReLU(),
-            torch.nn.Linear(100, 100),
-            torch.nn.ReLU(),
-            torch.nn.Linear(100, 100),
-            torch.nn.ReLU(),
-            torch.nn.Linear(100, out),
-            torch.nn.ReLU())
-        self.opt = torch.optim.SGD(
-            self.model.parameters(),
-            lr=learning_rate)
+
+        self.models = [[None, None] for _ in range(MAX_TURN)]
+        for i in range(MAX_TURN):
+            self.models[i][0] = torch.nn.Sequential(
+                torch.nn.Conv2d(
+                    in_channels=5,
+                    out_channels=5,
+                    padding=1,
+                    kernel_size=3),
+                torch.nn.ReLU(),
+                torch.nn.Flatten(),
+                torch.nn.Linear(inp, 100),
+                torch.nn.ReLU(),
+                torch.nn.Linear(100, out))
+            self.models[i][1] = torch.optim.Adam(
+                self.models[i][0].parameters(),
+                lr=learning_rate)
+
         self.discount = discount
         
     def get_action(self, s: SnapShot) -> tuple[float, Action]:
 
-        X = form_data([s])
-        q_vals_pred = self.model(X)[0]
+        X = form_data(s)
+        q_vals_pred = self.models[s.turn - 1][0](X)[0]
 
         actions_list = s.get_legal_actions()
 
@@ -48,28 +55,26 @@ class PolicyNet:
 
         return opt_q_action
     
-    def compute_td_loss(self, ss: list[SnapShot], acs: list[Action], nss: list[SnapShot], rs: list[int], ds: list[bool]) -> torch.Tensor:
+    def compute_td_loss(self, s: SnapShot, a: Action, ns: SnapShot, r: int, d: bool) -> torch.Tensor:
 
-        states = torch.tensor(form_data(ss), dtype=torch.float32)
-        actions = torch.tensor([form_index(a) for a in acs], dtype=torch.long)
-        rewards = torch.tensor([rs], dtype=torch.float32).T
-        dones = torch.tensor([ds], dtype=torch.bool).T
+        states = form_data(s)
+        actions = torch.tensor([form_index(a)], dtype=torch.long)
+        rewards = torch.tensor([[r]], dtype=torch.float32)
 
-        pred_q_values = self.model(states)
+        pred_q_values = self.models[s.turn - 1][0](states)
         pred_q_values_for_actions = pred_q_values[:, actions]
 
-        next_q_values = torch.tensor([[self.get_action(s)[0]] for s in nss])
+        next_q_values = torch.tensor([self.get_action(ns)[0]])
 
         new_q_values = rewards + self.discount * next_q_values
         loss = torch.mean((pred_q_values_for_actions - new_q_values.detach()) ** 2)
 
         return loss
     
-    def update_batch(self, batch: list[tuple[SnapShot, Action, SnapShot, int, bool]]):
+    def update_batch(self, s: SnapShot, a: Action, ns: SnapShot, r: int, d: bool):
 
-        ss, acs, nss, rs, ds = list(zip(*batch))
-        self.opt.zero_grad()
+        self.models[s.turn - 1][1].zero_grad()
         #print(self.get_action(batch[0][0]))
-        self.compute_td_loss(ss, acs, nss, rs, ds).backward()
-        self.opt.step()
+        self.compute_td_loss(s, a, ns, r, d).backward()
+        self.models[s.turn - 1][1].step()
         #print(self.get_action(batch[0][0]))

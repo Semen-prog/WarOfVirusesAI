@@ -16,4 +16,4 @@ DPATH = "/home/semen/Development/ml/source/best"
 IN_PATH = "/home/semen/Development/ml/wovenv/.cache/input"
 OUT_PATH = "/home/semen/Development/ml/wovenv/.cache/output"
 
-coefs = (1, 1, -1, -1, 0, 0)
+coefs = (1, 5, -1, 0, 1, -1)

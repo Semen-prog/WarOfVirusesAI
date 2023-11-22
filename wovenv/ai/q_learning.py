@@ -18,6 +18,6 @@ class QLearningAgent():
       return np.random.choice(state.get_legal_actions())
     return self.network.get_action(state)[1]
 
-  def update(self, batch):
+  def update(self, s, a, ns, r, d):
     
-    self.network.update_batch(batch)
+    self.network.update_batch(s, a, ns, r, d)

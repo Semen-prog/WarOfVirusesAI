@@ -1,12 +1,13 @@
 import os
 from wovenv.venv.state import *
 from wovenv.venv.snapshot import SnapShot, Action
-from wovenv.venv.utils import write_error, write_access
+from wovenv.venv.utils import write_error, write_access, clear_access
 
 class Env:
 
-    def __init__(self) -> None:
+    def __init__(self, write_log=False) -> None:
         
+        self.write_log=write_log
         self.reset()
 
     def _clear(self) -> None:
@@ -22,7 +23,26 @@ class Env:
         self.table[0][0] = State.RED_CROSS
         self.table[N - 1][M - 1] = State.BLUE_CROSS
 
+        if self.write_log:
+            clear_access()
+            write_access(f"{N} {M} 2\n")
+            for i in range(N):
+                for j in range(M):
+                    if i == 0 and j == 0: write_access("1 ")
+                    elif i == N - 1 and j == M - 1: write_access("2 ")
+                    else: write_access("0 ")
+                write_access("\n")
+
         return self.get_snapshot()
+    
+    def _write_action(self, a: Action, player: int):
+        if self.table[a.i][a.j] == State.EMPTY:
+            write_access(f"{a.i} {a.j} {player}\n")
+        else:
+            write_access(f"{a.i} {a.j} {-player}\n")
+
+    def finish_log(self):
+        write_access("-1 -1 -1")
     
     def _reinit(self, s: SnapShot) -> None:
 
@@ -79,7 +99,7 @@ class Env:
         return tab
 
 
-    def _make_turn(self, a: Action) -> None:
+    def _make_turn(self, a: Action, player: int) -> None:
 
         self._clear()
 
@@ -104,6 +124,8 @@ class Env:
             write_error(f"Error: cannot make turn: i = {a.i}, j = {a.j}, table:\n{tab}")
 
             return
+        
+        if self.write_log: self._write_action(a, player)
         
         self.table[a.i][a.j] = State.RED_CROSS if self.table[a.i][a.j] == State.EMPTY else State.RED_TOWER
         self.turn += 1
@@ -142,8 +164,10 @@ class Env:
     
     def step(self, a: Action) -> tuple[SnapShot, int, bool]:
 
-        start = self.get_snapshot().score()
-        self._make_turn(a)
+        s = self.get_snapshot()
+
+        start = s.score()
+        self._make_turn(a, 1)
 
         sn = self.get_snapshot()
         if not a.change: return (sn, sn.score() - start, sn.finished())
@@ -152,7 +176,7 @@ class Env:
 
         action_list = self._get_actions()
         for ar in action_list:
-            self._make_turn(ar)
+            self._make_turn(ar, 2)
 
         self.reverse()
         sn = self.get_snapshot()
