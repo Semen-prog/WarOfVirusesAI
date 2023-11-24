@@ -1,4 +1,5 @@
 from wovenv.venv.state import *
+from wovenv import N, M, MAX_TURN, coefs
 
 class Action:
 

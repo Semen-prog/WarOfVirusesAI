@@ -1,6 +1,6 @@
 import torch
 import numpy as np
-from wovenv.venv.state import N, M, MAX_TURN
+from wovenv import N, M, MAX_TURN
 from wovenv.venv.snapshot import SnapShot, Action
 
 def form_data(data: SnapShot) -> torch.Tensor:
@@ -23,6 +23,12 @@ class PolicyNet:
         self.models = [[None, None] for _ in range(MAX_TURN)]
         for i in range(MAX_TURN):
             self.models[i][0] = torch.nn.Sequential(
+                torch.nn.Conv2d(
+                    in_channels=5,
+                    out_channels=5,
+                    padding=1,
+                    kernel_size=3),
+                torch.nn.ReLU(),
                 torch.nn.Conv2d(
                     in_channels=5,
                     out_channels=5,

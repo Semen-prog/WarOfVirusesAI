@@ -1,5 +1,6 @@
 import os
 from wovenv.venv.state import *
+from wovenv import N, M, MAX_TURN, coefs, DPATH, IN_PATH, OUT_PATH
 from wovenv.venv.snapshot import SnapShot, Action
 from wovenv.venv.utils import write_error, write_access, clear_access
 
