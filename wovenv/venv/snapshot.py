@@ -1,3 +1,4 @@
+import torch
 from wovenv.venv.state import *
 from wovenv import N, M, MAX_TURN, coefs
 
@@ -8,6 +9,9 @@ class Action:
         self.i = i
         self.j = j
         self.change = c
+
+    def to_index(self) -> int:
+        return (self.i * M + self.j) * 2 + int(self.change)
 
     def __hash__(self) -> int:
         return hash((self.i, self.j,  self.change))
@@ -117,6 +121,13 @@ class SnapShot:
 
         return res
     
+    def to_tensor(self) -> torch.Tensor:
+        res = torch.zeros(5, N, M)
+        for i in range(N):
+            for j in range(M):
+                res[self.table[i][j].value][i][j] = 1.
+        return res
+    
     def __eq__(self, __value: object) -> bool:
         
         return hasattr(__value, "table") and hasattr(__value, "turn") and self.table == __value.table and self.turn == __value.turn
@@ -124,3 +135,6 @@ class SnapShot:
     def __hash__(self) -> int:
         
         return hash((self.table, self.turn))
+    
+def form_action(index: int) -> Action:
+    return Action(index // 2 // M, index // 2 % M, index % 2 == 1)

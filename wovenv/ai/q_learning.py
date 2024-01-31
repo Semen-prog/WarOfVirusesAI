@@ -16,9 +16,7 @@ class QLearningAgent():
     return np.random.uniform() < prob
 
   def get_action(self, state: SnapShot):
-    if self._flip_coin(self.epsilon):
-      return np.random.choice(state.get_legal_actions())
-    return self.networks[state.turn - 1].get_action(state)[1]
+    return self.networks[state.turn - 1].get_action(state, self.epsilon)
 
   def update(self, s: SnapShot, a: Action, ns: SnapShot, r: int, d: bool):
     self.replays[s.turn - 1].add(s, a, ns, r, d)

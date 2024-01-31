@@ -7,4 +7,3 @@ class State(Enum):
     BLUE_CROSS = 2
     BLUE_TOWER = 3
     EMPTY = 4
-    STONE = 5

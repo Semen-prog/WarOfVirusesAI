@@ -2,79 +2,44 @@ import torch
 from wovenv import N, M
 from wovenv.venv.snapshot import SnapShot, Action
 from wovenv.venv.replay import Replay
+from .dqn_model import DQN
 
 def form_data(data: list[SnapShot]) -> torch.Tensor:
-    res = torch.zeros(len(data), 5, N, M)
-    for k in range(len(data)):
-        for i in range(N):
-            for j in range(M):
-                res[k][data[k].table[i][j].value][i][j] = 1.
+    res = torch.stack([s.to_tensor() for s in data])
     return res
-
-def form_index(a: Action):
-    return (a.i * M + a.j) * 2 + int(a.change)
 
 class Engine:
     def __init__(self, learning_rate):
-        self.model = torch.nn.Sequential(
-                torch.nn.Conv2d(
-                    in_channels=5,
-                    out_channels=5,
-                    padding=1,
-                    kernel_size=3),
-                torch.nn.ReLU(),
-                torch.nn.Conv2d(
-                    in_channels=5,
-                    out_channels=5,
-                    padding=1,
-                    kernel_size=3),
-                torch.nn.ReLU(),
-                torch.nn.Flatten(),
-                torch.nn.Linear(inp, 100),
-                torch.nn.ReLU(),
-                torch.nn.Linear(100, out))
-        self.optim = torch.optim.Adam(
+        self.model = DQN(N * M * 5, N * M * 2)
+        self.optim = torch.optim.SGD(
                 self.model.parameters(),
                 lr=learning_rate)
-
-inp = N * M * 5
-out = N * M * 2
 
 class PolicyNet:
 
     def __init__(self, learning_rate=0.5, discount=1) -> None:
-        self.engine = Engine(learning_rate)
+        self.engine   = Engine(learning_rate)
         self.discount = discount
         
-    def get_action(self, s: SnapShot) -> tuple[float, Action]:
-
-        X = form_data([s])
-        q_vals_pred = self.engine.model(X)[0]
-
-        actions_list = s.get_legal_actions()
-
-        if len(actions_list) == 0: return (0., None)
-
-        opt_q_action = (q_vals_pred[form_index(actions_list[0])], actions_list[0])
-        for a in actions_list:
-            if opt_q_action[0] < q_vals_pred[form_index(a)]:
-                opt_q_action = (q_vals_pred[form_index(a)], a)
-
-        return opt_q_action
+    def get_action(self, s: SnapShot, eps: float) -> tuple[float, Action]:
+        return self.engine.model.act(s, eps)
     
-    def compute_td_loss(self, s: list[SnapShot], a: list[Action], ns: list[SnapShot], r: list[int], d: list[bool]) -> torch.Tensor:
+    def compute_td_loss(self, state: list[SnapShot], action: list[Action], next_state: list[SnapShot], reward: list[int], done: list[bool]) -> torch.Tensor:
 
-        states = form_data(s)
-        actions = torch.tensor(list(map(form_index, a)), dtype=torch.long)
-        rewards = torch.tensor([[ri] for ri in r], dtype=torch.float32)
+        state      = torch.autograd.Variable(form_data(state))
+        next_state = torch.autograd.Variable(form_data(next_state), volatile=True)
+        action     = torch.autograd.Variable(torch.LongTensor(list(map(lambda a: a.to_index(), action))))
+        reward     = torch.autograd.Variable(torch.FloatTensor(reward))
+        done       = torch.autograd.Variable(torch.FloatTensor(done))
 
-        pred_q_values = self.engine.model(states)
-        pred_q_values_for_actions = pred_q_values[:, actions]
+        q_values      = self.engine.model(state)
+        next_q_values = self.engine.model(next_state)
 
-        next_q_values = torch.tensor([self.get_action(ss)[0] for ss in ns])
+        q_value          = q_values.gather(1, action.unsqueeze(1)).squeeze(1)
+        next_q_value     = next_q_values.max(1)[0]
+        expected_q_value = reward + self.discount * next_q_value * (1 - done)
 
-        new_q_values = rewards + self.discount * next_q_values
-        loss = torch.mean((pred_q_values_for_actions - new_q_values.detach()) ** 2)
+        loss = (q_value - torch.autograd.Variable(expected_q_value.data)).pow(2).mean()
 
         return loss
     

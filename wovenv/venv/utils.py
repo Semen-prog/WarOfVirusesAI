@@ -9,13 +9,13 @@ def clear_access():
     open(f"{ROOT}wovenv/log/access.log", "w").close()
 
 def write_error(error: str):
-    f = open("{ROOT}wovenv/log/error.log", "+a")
+    f = open(f"{ROOT}wovenv/log/error.log", "+a")
     f.write(f"\n{get_time()}: {error}")
     f.close()
 
     exit(0)
 
 def write_access(data: str):
-    f = open("{ROOT}wovenv/log/access.log", "+a")
+    f = open(f"{ROOT}wovenv/log/access.log", "+a")
     f.write(data)
     f.close()
