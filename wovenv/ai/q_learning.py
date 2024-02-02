@@ -20,4 +20,4 @@ class QLearningAgent():
 
   def update(self, s: SnapShot, a: Action, ns: SnapShot, r: int, d: bool):
     self.replays[s.turn - 1].add(s, a, ns, r, d)
-    self.networks[s.turn - 1].update_batch(self.replays[s.turn - 1])
+    return self.networks[s.turn - 1].update_batch(self.replays[s.turn - 1])

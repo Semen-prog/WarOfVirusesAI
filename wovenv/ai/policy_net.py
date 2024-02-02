@@ -46,5 +46,7 @@ class PolicyNet:
     def update_batch(self, rep: Replay):
         s, a, ns, r, d = zip(*rep.rl)
         self.engine.optim.zero_grad()
-        self.compute_td_loss(s, a, ns, r, d).backward()
+        loss = self.compute_td_loss(s, a, ns, r, d)
+        loss.backward()
         self.engine.optim.step()
+        return loss.detach()
