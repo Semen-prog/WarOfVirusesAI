@@ -12,10 +12,17 @@ class DQN(torch.nn.Module):
                 out_channels=5,
                 padding=1,
                 kernel_size=3),
+            torch.nn.ReLU(),
+            torch.nn.Conv2d(
+                in_channels=5,
+                out_channels=5,
+                padding=1,
+                kernel_size=3
+            ),
+            torch.nn.ReLU()
         )
 
         self.advantage = torch.nn.Sequential(
-            torch.nn.ReLU(),
             torch.nn.Flatten(),
             torch.nn.Linear(num_inputs, 100),
             torch.nn.ReLU(),
@@ -23,7 +30,6 @@ class DQN(torch.nn.Module):
         )
 
         self.value = torch.nn.Sequential(
-            torch.nn.ReLU(),
             torch.nn.Flatten(),
             torch.nn.Linear(num_inputs, 100),
             torch.nn.ReLU(),
@@ -38,11 +44,12 @@ class DQN(torch.nn.Module):
 
         return advantage + value
 
-    def act(self, _state: SnapShot, epsilon):
+    def act(self, _state: SnapShot):
         state   = torch.autograd.Variable(_state.to_tensor().unsqueeze(0), volatile=True)
-        q_value = self.forward(state)
-        action  = form_action(q_value.max(1)[1].item())
-        legal_actions = _state.get_legal_actions();
-        if random.random() > epsilon or (action not in legal_actions):
-            action = legal_actions[random.randrange(len(legal_actions))]
-        return action
+        q_values = self.forward(state)
+        legal_actions = _state.get_legal_actions()
+        opt_val = (-10000000, None)
+        for action in legal_actions:
+            if q_values[0][action.to_index()] > opt_val[0]:
+                opt_val = (q_values[0][action.to_index()], action)
+        return opt_val

@@ -16,8 +16,16 @@ class QLearningAgent():
     return np.random.uniform() < prob
 
   def get_action(self, state: SnapShot):
-    return self.networks[state.turn - 1].get_action(state, self.epsilon)
+    if self._flip_coin(self.epsilon):
+      actions = state.get_legal_actions()
+      return actions[np.random.randint(len(actions))]
+    return self.networks[state.turn - 1].get_action(state)[1]
+  
+  def update_batch(self):
+    sm_loss = 0
+    for i in range(MAX_TURN):
+      sm_loss += self.networks[i].update_batch(self.replays[i]).item()
+    return sm_loss / 3
 
   def update(self, s: SnapShot, a: Action, ns: SnapShot, r: int, d: bool):
     self.replays[s.turn - 1].add(s, a, ns, r, d)
-    return self.networks[s.turn - 1].update_batch(self.replays[s.turn - 1])
