@@ -26,6 +26,10 @@ class QLearningAgent():
     for i in range(MAX_TURN):
       sm_loss += self.networks[i].update_batch(self.replays[i]).item()
     return sm_loss / 3
+  
+  def set_lr(self, lr):
+    for i in range(MAX_TURN):
+      self.networks[i].engine.optim.param_groups[0]['lr'] = lr
 
   def update(self, s: SnapShot, a: Action, ns: SnapShot, r: int, d: bool):
     self.replays[s.turn - 1].add(s, a, ns, r, d)
