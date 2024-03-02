@@ -1,4 +1,4 @@
-import torch, numpy
+import torch, numpy, random
 from wovenv.venv.snapshot import SnapShot, Action
 from wovenv import MAX_TURN
 from collections import deque
@@ -9,11 +9,7 @@ class Replay(object):
         self.size = size
 
     def sample(self, sample_size):
-        mask = numpy.random.choice(range(len(self.rl)), sample_size)
-        sample = []
-        for i in mask:
-            sample.append(self.rl[i])
-        return sample
+        return random.sample(list(self.rl), min(len(self.rl), sample_size))
 
     def add(self, s: SnapShot, a: Action, ns: SnapShot, r: int, d: bool) -> None:
         self.rl.append((s, a, ns, r, d))

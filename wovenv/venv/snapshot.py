@@ -1,4 +1,4 @@
-import torch
+import torch, math
 from wovenv.venv.state import *
 from wovenv import N, M, MAX_TURN, coefs
 
@@ -52,14 +52,14 @@ class SnapShot:
 
         for i in range(n):
             for j in range(m):
-                if self.table[i][j] == State.RED_CROSS and not self._used[i][j]:
-                    self._find_access(i, j, State.RED_CROSS, State.RED_TOWER)
+                if self.table[i][j] == State.BLUE_CROSS and not self._used[i][j]:
+                    self._find_access(i, j, State.BLUE_CROSS, State.BLUE_TOWER)
 
         answer = []
 
         for i in range(n):
             for j in range(m):
-                if self._used[i][j] and (self.table[i][j] == State.BLUE_CROSS or self.table[i][j] == State.EMPTY):
+                if self._used[i][j] and (self.table[i][j] == State.RED_CROSS or self.table[i][j] == State.EMPTY):
                     if self.turn != MAX_TURN: answer.append(Action(i, j, False))
                     answer.append(Action(i, j, True))
         
@@ -72,14 +72,14 @@ class SnapShot:
 
         for i in range(n):
             for j in range(m):
-                if self.table[i][j] == State.BLUE_CROSS and not self._used[i][j]:
-                    self._find_access(i, j, State.BLUE_CROSS, State.BLUE_TOWER)
+                if self.table[i][j] == State.RED_CROSS and not self._used[i][j]:
+                    self._find_access(i, j, State.RED_CROSS, State.RED_TOWER)
 
         answer = []
 
         for i in range(n):
             for j in range(m):
-                if self._used[i][j] and (self.table[i][j] == State.RED_CROSS):
+                if self._used[i][j] and (self.table[i][j] == State.BLUE_CROSS):
                     if self.turn != MAX_TURN: answer.append(Action(i, j, False))
                     answer.append(Action(i, j, True))
         
@@ -93,18 +93,25 @@ class SnapShot:
 
         return (len(self.table), len(self.table[0]))
     
-    def score(self) -> int:
+    def score(self) -> float:
 
         cnt = [0, 0, 0, 0, len(self.get_legal_actions()), len(self.get_opponents_actions())]
+        self._clear()
         n, m = self.shape()
 
         for i in range(n):
             for j in range(m):
-                if self.table[i][j].value < 4: cnt[self.table[i][j].value] += 1
+                if self.table[i][j] == State.BLUE_CROSS and not self._used[i][j]:
+                    self._find_access(i, j, State.BLUE_CROSS, State.BLUE_TOWER)
 
-        ans = 0
-        for s in State:
-            ans += cnt[s.value] * coefs[s.value]
+        for i in range(n):
+            for j in range(m):
+                if self.table[i][j] == State.BLUE_CROSS: cnt[0] += 1
+                if self.table[i][j] == State.BLUE_TOWER: cnt[1] += 1
+                if self.table[i][j] == State.RED_CROSS: cnt[2] += 1
+                if self.table[i][j] == State.RED_TOWER: cnt[3] += 1
+
+        ans = cnt[0] * coefs[0] + coefs[1] * cnt[1] - cnt[2] * coefs[2] - coefs[3] * cnt[3]
 
         return ans
 

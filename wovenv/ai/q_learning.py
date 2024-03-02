@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 from wovenv.ai.policy_net import PolicyNet
 from wovenv.venv.snapshot import SnapShot, Action
 from wovenv.venv.replay import Replay
@@ -22,9 +23,10 @@ class QLearningAgent():
     return self.networks[state.turn - 1].get_action(state)[1]
   
   def update_batch(self):
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     sm_loss = 0
     for i in range(MAX_TURN):
-      sm_loss += self.networks[i].update_batch(self.replays[i]).item()
+      sm_loss += self.networks[i].update_batch(self.replays[i]).to(device).item()
     return sm_loss / 3
   
   def set_lr(self, lr):

@@ -13,4 +13,6 @@ DPATH = f"{ROOT}source/best"
 IN_PATH = f"{ROOT}wovenv/.cache/input"
 OUT_PATH = f"{ROOT}wovenv/.cache/output"
 
-coefs = (0, 2, 0, -1, 0, 0)
+coefs = (0, 1, 0, 0, 0, 0)
+
+# (my_cross, my_tower, op_cross, op_tower, my_act, op_act)

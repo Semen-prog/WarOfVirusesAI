@@ -1,4 +1,5 @@
 import os
+from sys import exit
 from wovenv.venv.state import *
 from wovenv import N, M, MAX_TURN, coefs, DPATH, IN_PATH, OUT_PATH
 from wovenv.venv.snapshot import SnapShot, Action
@@ -21,8 +22,8 @@ class Env:
         self.turn = 1
         self.table = [[ State.EMPTY for _ in range(M) ] for _ in range(N) ]
 
-        self.table[0][0] = State.RED_CROSS
-        self.table[N - 1][M - 1] = State.BLUE_CROSS
+        self.table[0][0] = State.BLUE_CROSS
+        self.table[N - 1][M - 1] = State.RED_CROSS
 
         if self.write_log:
             clear_access()
@@ -73,7 +74,7 @@ class Env:
     def _check_access(self, i, j) -> bool:
 
         self._used[i][j] = True
-        if self.table[i][j] == State.RED_CROSS: return True
+        if self.table[i][j] == State.BLUE_CROSS: return True
 
         n, m = self.shape()
 
@@ -81,7 +82,7 @@ class Env:
             for dj in range(-1, 2):
                 ip, jp = i + di, j + dj
                 if 0 <= ip < n and 0 <= jp < m and not self._used[ip][jp] \
-                    and (self.table[ip][jp] == State.RED_CROSS or self.table[ip][jp] == State.RED_TOWER) \
+                    and (self.table[ip][jp] == State.BLUE_CROSS or self.table[ip][jp] == State.BLUE_TOWER) \
                     and self._check_access(ip, jp):
                     return True
                 
@@ -105,7 +106,7 @@ class Env:
         self._clear()
 
         n, m = self.shape()
-        if not (0 <= a.i < n and 0 <= a.j < m and (self.table[a.i][a.j] == State.BLUE_CROSS or self.table[a.i][a.j] == State.EMPTY)):
+        if not (0 <= a.i < n and 0 <= a.j < m and (self.table[a.i][a.j] == State.RED_CROSS or self.table[a.i][a.j] == State.EMPTY)):
             
             tab = self._get_string_table()
             write_error(f"Error: incorrect cell was provided: i = {a.i}, j = {a.j}, table:\n{tab}")
@@ -128,7 +129,7 @@ class Env:
         
         if self.write_log: self._write_action(a, player)
         
-        self.table[a.i][a.j] = State.RED_CROSS if self.table[a.i][a.j] == State.EMPTY else State.RED_TOWER
+        self.table[a.i][a.j] = State.BLUE_CROSS if self.table[a.i][a.j] == State.EMPTY else State.BLUE_TOWER
         self.turn += 1
 
     def _get_actions(self) -> list[Action]:
@@ -172,7 +173,7 @@ class Env:
 
         sn = self.get_snapshot()
         if not a.change: return (sn, sn.score() - start, sn.finished())
-
+        
         self.reverse()
 
         action_list = self._get_actions()
@@ -180,6 +181,7 @@ class Env:
             self._make_turn(ar, 2)
 
         self.reverse()
+        
         sn = self.get_snapshot()
 
         return (sn, sn.score() - start, sn.finished())
