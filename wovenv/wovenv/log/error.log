@@ -1,0 +1,48 @@
+
+01/03/2024, 21:49:15: 
+((<State.RED_CROSS: 0>, <State.RED_CROSS: 0>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>), (<State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>), (<State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>), (<State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>), (<State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>), (<State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>), (<State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>), (<State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>), (<State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>), (<State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.BLUE_CROSS: 2>))
+
+
+01/03/2024, 21:49:15: 
+((<State.BLUE_CROSS: 2>, <State.BLUE_CROSS: 2>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>), (<State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>), (<State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>), (<State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>), (<State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>), (<State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>), (<State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>), (<State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>), (<State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>), (<State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.RED_CROSS: 0>))
+
+
+01/03/2024, 21:49:15: 
+((<State.RED_CROSS: 0>, <State.RED_CROSS: 0>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>), (<State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>), (<State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>), (<State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>), (<State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>), (<State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>), (<State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>), (<State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.BLUE_CROSS: 2>), (<State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.BLUE_CROSS: 2>, <State.EMPTY: 4>), (<State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.EMPTY: 4>, <State.BLUE_CROSS: 2>, <State.EMPTY: 4>, <State.BLUE_CROSS: 2>))
+
+
+01/03/2024, 21:57:26: Error: cannot make turn: i = 2, j = 0, table:
+0 0 0 4 4 4 4 4 4 4 
+0 4 4 4 4 4 4 4 4 4 
+4 4 4 4 4 4 4 4 4 4 
+4 4 4 4 4 4 4 4 4 4 
+4 4 4 4 4 4 4 4 4 4 
+4 4 4 4 4 4 4 4 4 4 
+4 4 4 4 4 4 4 4 4 4 
+4 4 4 4 4 4 4 4 4 4 
+4 4 4 4 4 4 4 4 4 4 
+4 4 4 4 4 4 4 4 4 2 
+
+01/03/2024, 21:57:32: Error: cannot make turn: i = 0, j = 2, table:
+0 4 4 4 4 4 4 4 4 4 
+4 0 4 4 4 4 4 4 4 4 
+4 4 4 4 4 4 4 4 4 4 
+4 4 4 4 4 4 4 4 4 4 
+4 4 4 4 4 4 4 4 4 4 
+4 4 4 4 4 4 4 4 4 4 
+4 4 4 4 4 4 4 4 4 4 
+4 4 4 4 4 4 4 4 4 4 
+4 4 4 4 4 4 4 4 4 4 
+4 4 4 4 4 4 4 4 4 2 
+
+01/03/2024, 22:00:38: Error: cannot make turn: i = 0, j = 2, table:
+0 4 4 4 4 4 4 4 4 4 
+0 0 4 4 4 4 4 4 4 4 
+4 4 4 4 4 4 4 4 4 4 
+4 4 4 4 4 4 4 4 4 4 
+4 4 4 4 4 4 4 4 4 4 
+4 4 4 4 4 4 4 4 4 4 
+4 4 4 4 4 4 4 4 4 4 
+4 4 4 4 4 4 4 4 4 4 
+4 4 4 4 4 4 4 4 4 4 
+4 4 4 4 4 4 4 4 4 2 
