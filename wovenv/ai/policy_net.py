@@ -42,15 +42,18 @@ class PolicyNet:
         next_q_value     = torch.tensor([[self.get_action(ns)[0]] for ns in next_state]).to(device)
         expected_q_value = reward + self.discount * next_q_value * (1 - done)
 
-        loss = torch.nn.functional.huber_loss(q_value, expected_q_value).to(device)
+        loss = (q_value - expected_q_value.detach()) ** 2
 
         return loss
     
     def update_batch(self, rep: Replay):
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        s, a, ns, r, d = [] * 5 if len(rep.rl) == 0 else zip(*rep.sample(SAMPLE_SIZE))
+        sample, idx = rep.sample(SAMPLE_SIZE)
+        s, a, ns, r, d = [] * 5 if rep.len() == 0 else zip(*sample)
         self.engine.optim.zero_grad()
         loss = self.compute_td_loss(s, a, ns, r, d).to(device)
+        rep.update_priority(loss, idx)
+        loss = loss.mean()
         loss.backward()
         self.engine.optim.step()
         return loss.detach().to(device)

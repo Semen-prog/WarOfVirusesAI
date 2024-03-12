@@ -34,4 +34,4 @@ class QLearningAgent():
       self.networks[i].engine.optim.param_groups[0]['lr'] = lr
 
   def update(self, s: SnapShot, a: Action, ns: SnapShot, r: int, d: bool):
-    self.replays[s.turn - 1].add(s, a, ns, r, d)
+    self.replays[s.turn - 1].add(s, a, ns, r, d, self.networks[s.turn - 1].compute_td_loss([s], [a], [ns], [r], [d]).detach().item())
