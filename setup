@@ -1,0 +1,4 @@
+#!/usr/bin/bash
+
+conda install -c pytorch pytorch=2.1.0
+pip install torchrl ipykernel matplotlib
