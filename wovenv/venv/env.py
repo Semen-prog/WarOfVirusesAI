@@ -7,7 +7,7 @@ from wovenv.venv.utils import write_error, write_access, clear_access
 
 class Env:
 
-    def __init__(self, write_log=False) -> None:
+    def __init__(self, write_log=True) -> None:
         
         self.write_log=write_log
         self.reset()
@@ -163,6 +163,16 @@ class Env:
 
         ouf.close()
         return turns
+
+    def _skip(self) -> None:
+        self.reverse()
+        self.turn = -float('inf')
+        while not self.get_snapshot().finished():
+            action_list = self._get_actions()
+            for ar in action_list:
+                ar.change = False
+                self._make_turn(ar, 2)
+        self.reverse()
     
     def step(self, a: Action) -> tuple[SnapShot, int, bool]:
 
@@ -171,8 +181,11 @@ class Env:
         start = s.score()
         self._make_turn(a, 1)
 
-        sn = self.get_snapshot()
-        if not a.change: return (sn, sn.score() - start, sn.finished())
+        if not a.change:
+            if self.get_snapshot().finished():
+                self._skip()
+            sn = self.get_snapshot()
+            return (sn, sn.score() - start, sn.finished())
         
         self.reverse()
 
@@ -182,8 +195,10 @@ class Env:
 
         self.reverse()
         
-        sn = self.get_snapshot()
+        if self.get_snapshot().finished():
+            self._skip()
 
+        sn = self.get_snapshot()
         return (sn, sn.score() - start, sn.finished())
     
     def get_result(self, s: SnapShot, a: Action) -> tuple[SnapShot, int, bool]:
