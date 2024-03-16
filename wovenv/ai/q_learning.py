@@ -24,10 +24,13 @@ class QLearningAgent():
   
   def update_batch(self):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    sm_loss = 0
+    sm_loss, cnt_loss = 0, 0
     for i in range(MAX_TURN):
-      sm_loss += self.networks[i].update_batch(self.replays[i]).to(device).item()
-    return sm_loss / 3
+      value = self.networks[i].update_batch(self.replays[i]).to(device).item()
+      if value != float('inf'):
+        sm_loss += value
+        cnt_loss += 1
+    return sm_loss / cnt_loss
   
   def set_lr(self, lr):
     for i in range(MAX_TURN):

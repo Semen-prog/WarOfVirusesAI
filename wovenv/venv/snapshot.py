@@ -4,21 +4,20 @@ from wovenv import N, M, MAX_TURN, coefs
 
 class Action:
 
-    def __init__(self, i: int, j: int, c: bool) -> None:
+    def __init__(self, i: int, j: int) -> None:
         
         self.i = i
         self.j = j
-        self.change = c
 
     def to_index(self) -> int:
-        return (self.i * M + self.j) * 2 + int(self.change)
+        return (self.i * M + self.j)
 
     def __hash__(self) -> int:
-        return hash((self.i, self.j,  self.change))
+        return hash((self.i, self.j))
     
     def __eq__(self, __value: object) -> bool:
-        return hasattr(__value, "i") and hasattr(__value, "j") and hasattr(__value, "change") and \
-                self.i == __value.i and self.j == __value.j and self.change == __value.change
+        return hasattr(__value, "i") and hasattr(__value, "j") and \
+                self.i == __value.i and self.j == __value.j
 
 class SnapShot:
 
@@ -60,8 +59,7 @@ class SnapShot:
         for i in range(n):
             for j in range(m):
                 if self._used[i][j] and (self.table[i][j] == State.RED_CROSS or self.table[i][j] == State.EMPTY):
-                    if self.turn != MAX_TURN: answer.append(Action(i, j, False))
-                    answer.append(Action(i, j, True))
+                    answer.append(Action(i, j))
         
         return answer
     
@@ -80,8 +78,7 @@ class SnapShot:
         for i in range(n):
             for j in range(m):
                 if self._used[i][j] and (self.table[i][j] == State.BLUE_CROSS):
-                    if self.turn != MAX_TURN: answer.append(Action(i, j, False))
-                    answer.append(Action(i, j, True))
+                    answer.append(Action(i, j))
         
         return answer
     
@@ -144,4 +141,4 @@ class SnapShot:
         return hash((self.table, self.turn))
     
 def form_action(index: int) -> Action:
-    return Action(index // 2 // M, index // 2 % M, index % 2 == 1)
+    return Action(index // M, index % M)

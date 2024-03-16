@@ -113,13 +113,6 @@ class Env:
 
             return
         
-        if not a.change and self.turn == MAX_TURN:
-
-            tab = self._get_string_table()
-            write_error(f"Error: violation of MAX_TURN rule: table:\n{tab}")
-
-            return
-        
         if not self._check_access(a.i, a.j):
 
             tab = self._get_string_table()
@@ -159,7 +152,7 @@ class Env:
             i, j = map(int, ouf.readline().split())
             i -= 1
             j -= 1
-            turns.append(Action(i, j, e == k - 1))
+            turns.append(Action(i, j))
 
         ouf.close()
         return turns
@@ -170,7 +163,6 @@ class Env:
         while not self.get_snapshot().finished():
             action_list = self._get_actions()
             for ar in action_list:
-                ar.change = False
                 self._make_turn(ar, 2)
         self.reverse()
     
@@ -181,7 +173,7 @@ class Env:
         start = s.score()
         self._make_turn(a, 1)
 
-        if not a.change:
+        if self.turn < MAX_TURN:
             if self.get_snapshot().finished():
                 self._skip()
             sn = self.get_snapshot()

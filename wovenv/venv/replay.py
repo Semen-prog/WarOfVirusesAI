@@ -11,7 +11,7 @@ class Replay:
         return len(self.buffer)
     
     def add(self, s: SnapShot, a: Action, ns: SnapShot, r: int, d: bool, p: float) -> None:
-        index = self.buffer.add(1)
+        index = self.buffer.add(hash((s, a)))
         self.data[index] = (s, a, ns, r, d)
         self.buffer.update_priority(index, p)
 

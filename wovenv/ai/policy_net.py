@@ -13,7 +13,7 @@ def form_data(data: list[SnapShot]) -> torch.Tensor:
 class Engine:
     def __init__(self, learning_rate):
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        self.model = DQN(N * M, N * M * 2).to(device)
+        self.model = DQN(N * M, N * M).to(device)
         self.optim = torch.optim.Adam(
                 self.model.parameters(),
                 lr=learning_rate)
@@ -47,9 +47,10 @@ class PolicyNet:
         return loss
     
     def update_batch(self, rep: Replay):
+        if rep.len() == 0: return torch.tensor([float('inf')])
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         sample, idx = rep.sample(SAMPLE_SIZE)
-        s, a, ns, r, d = [] * 5 if rep.len() == 0 else zip(*sample)
+        s, a, ns, r, d = zip(*sample)
         self.engine.optim.zero_grad()
         loss = self.compute_td_loss(s, a, ns, r, d).to(device)
         rep.update_priority(loss, idx)

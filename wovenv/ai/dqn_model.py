@@ -36,12 +36,16 @@ class DQN(torch.nn.Module):
             torch.nn.ReLU(),
             torch.nn.Linear(100, 100),
             torch.nn.ReLU(),
+            torch.nn.Linear(100, 100),
+            torch.nn.ReLU(),
             torch.nn.Linear(100, 1)
         ).to(device)
 
         self.value = torch.nn.Sequential(
             torch.nn.Flatten(),
             torch.nn.Linear(num_inputs, 100),
+            torch.nn.ReLU(),
+            torch.nn.Linear(100, 100),
             torch.nn.ReLU(),
             torch.nn.Linear(100, 100),
             torch.nn.ReLU(),

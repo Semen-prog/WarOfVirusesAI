@@ -1,5 +1,2 @@
-wovenv/log/access.log
-wovenv/log/error.log
-wovenv/.cache/input
-wovenv/.cache/output
 **/__pycache__
+**/.ipynb_checkpoints
