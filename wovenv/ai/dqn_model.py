@@ -1,6 +1,7 @@
 import torch
 import random
 from wovenv.venv.snapshot import *
+from wovenv.venv.utils import write_error
 
 class DQN(torch.nn.Module):
     def __init__(self, num_inputs, num_actions):
@@ -9,10 +10,17 @@ class DQN(torch.nn.Module):
         
         self.feature = torch.nn.Sequential(
             torch.nn.Conv2d(
-                in_channels=5,
+                in_channels=6,
                 out_channels=5,
                 padding=1,
                 kernel_size=3),
+            torch.nn.ReLU(),
+            torch.nn.Conv2d(
+                in_channels=5,
+                out_channels=5,
+                padding=1,
+                kernel_size=3
+            ),
             torch.nn.ReLU(),
             torch.nn.Conv2d(
                 in_channels=5,
@@ -27,11 +35,11 @@ class DQN(torch.nn.Module):
                 padding=1,
                 kernel_size=3
             ),
-            torch.nn.ReLU()
+            torch.nn.ReLU(),
+            torch.nn.Flatten()
         ).to(device)
 
         self.advantage = torch.nn.Sequential(
-            torch.nn.Flatten(),
             torch.nn.Linear(num_inputs, 100),
             torch.nn.ReLU(),
             torch.nn.Linear(100, 100),
@@ -42,7 +50,6 @@ class DQN(torch.nn.Module):
         ).to(device)
 
         self.value = torch.nn.Sequential(
-            torch.nn.Flatten(),
             torch.nn.Linear(num_inputs, 100),
             torch.nn.ReLU(),
             torch.nn.Linear(100, 100),
@@ -52,18 +59,16 @@ class DQN(torch.nn.Module):
             torch.nn.Linear(100, num_actions)
         ).to(device)
 
-    def forward(self, x):
-        x = self.feature(x)
-
+    def forward(self, x, xp):
+        x = torch.cat([self.feature(x), xp], dim=1)
         advantage = self.advantage(x)
         value = self.value(x)
 
         return advantage + value
 
     def act(self, _state: SnapShot):
-        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-        state   = torch.autograd.Variable(_state.to_tensor().to(device).unsqueeze(0).to(device), requires_grad=False)
-        q_values = self.forward(state).detach()
+        state, statep = form_states([_state])
+        q_values = self(state, statep).detach()
         legal_actions = _state.get_legal_actions()
         opt_val = (-10000000, None)
         for action in legal_actions:

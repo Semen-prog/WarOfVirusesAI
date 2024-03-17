@@ -21,10 +21,13 @@ class Action:
 
 class SnapShot:
 
-    def __init__(self, table: list[list[State]], turn: int) -> None:
+    def __init__(self, table: list[list[State]], cached: list[Action]) -> None:
 
         self.table = tuple(map(tuple, table))
-        self.turn = turn
+        self.cached = tuple(cached)
+    
+    def turn(self):
+        return len(self.cached)
 
     def _clear(self):
 
@@ -63,25 +66,6 @@ class SnapShot:
         
         return answer
     
-    def get_opponents_actions(self) -> list[Action]:
-
-        self._clear()
-        n, m = self.shape()
-
-        for i in range(n):
-            for j in range(m):
-                if self.table[i][j] == State.RED_CROSS and not self._used[i][j]:
-                    self._find_access(i, j, State.RED_CROSS, State.RED_TOWER)
-
-        answer = []
-
-        for i in range(n):
-            for j in range(m):
-                if self._used[i][j] and (self.table[i][j] == State.BLUE_CROSS):
-                    answer.append(Action(i, j))
-        
-        return answer
-    
     def finished(self) -> bool:
 
         return len(self.get_legal_actions()) == 0
@@ -92,7 +76,7 @@ class SnapShot:
     
     def score(self) -> float:
 
-        cnt = [0, 0, 0, 0, len(self.get_legal_actions()), len(self.get_opponents_actions())]
+        cnt = [0, 0, 0, 0]
         self._clear()
         n, m = self.shape()
 
@@ -111,34 +95,30 @@ class SnapShot:
         ans = cnt[0] * coefs[0] + coefs[1] * cnt[1] - cnt[2] * coefs[2] - coefs[3] * cnt[3]
 
         return ans
-
-    def unroll(self) -> list[int]:
-
-        res = []
-
-        n, m = self.shape()
-        for i in range(n):
-            for j in range(m):
-                res.append(self.table[i][j].value)
-
-        res.append(self.turn)
-
-        return res
     
     def to_tensor(self) -> torch.Tensor:
-        res = torch.zeros(5, N, M)
+        res = torch.zeros(6, N, M)
         for i in range(N):
             for j in range(M):
                 res[self.table[i][j].value][i][j] = 1.
+        for a in self.cached:
+            res[5][a.i][a.j] = 1
         return res
     
     def __eq__(self, __value: object) -> bool:
         
-        return hasattr(__value, "table") and hasattr(__value, "turn") and self.table == __value.table and self.turn == __value.turn
+        return hasattr(__value, "table") and hasattr(__value, "cached") and self.table == __value.table and self.cached == __value.cached
     
     def __hash__(self) -> int:
         
-        return hash((self.table, self.turn))
+        return hash((self.table, self.cached))
     
 def form_action(index: int) -> Action:
     return Action(index // M, index % M)
+
+def form_states(data: list[SnapShot]) -> tuple[torch.Tensor, torch.Tensor]:
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    res    = torch.autograd.Variable(torch.stack([s.to_tensor().to(device) for s in data])).to(device)
+    lines  = torch.diag(torch.ones(MAX_TURN))
+    resp   = torch.autograd.Variable(torch.stack([lines[s.turn()].to(device) for s in data])).to(device)
+    return res, resp

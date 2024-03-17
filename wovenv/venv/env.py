@@ -19,7 +19,7 @@ class Env:
 
     def reset(self) -> SnapShot:
 
-        self.turn = 1
+        self.cached = []
         self.table = [[ State.EMPTY for _ in range(M) ] for _ in range(N) ]
 
         self.table[0][0] = State.BLUE_CROSS
@@ -37,6 +37,9 @@ class Env:
 
         return self.get_snapshot()
     
+    def turn(self):
+        return len(self.cached)
+    
     def _write_action(self, a: Action, player: int):
         if self.table[a.i][a.j] == State.EMPTY:
             write_access(f"{a.i} {a.j} {player}\n")
@@ -53,7 +56,7 @@ class Env:
 
     def get_snapshot(self) -> SnapShot:
 
-        return SnapShot(self.table, self.turn)
+        return SnapShot(self.table, self.cached)
 
     def shape(self) -> tuple[int, int]:
 
@@ -61,7 +64,7 @@ class Env:
     
     def reverse(self):
 
-        self.turn = 1
+        self.cached = []
         n, m = self.shape()
 
         for i in range(n):
@@ -123,7 +126,7 @@ class Env:
         if self.write_log: self._write_action(a, player)
         
         self.table[a.i][a.j] = State.BLUE_CROSS if self.table[a.i][a.j] == State.EMPTY else State.BLUE_TOWER
-        self.turn += 1
+        self.cached.append(a)
 
     def _get_actions(self) -> list[Action]:
 
@@ -159,8 +162,8 @@ class Env:
 
     def _skip(self) -> None:
         self.reverse()
-        self.turn = -float('inf')
         while not self.get_snapshot().finished():
+            self.cached = []
             action_list = self._get_actions()
             for ar in action_list:
                 self._make_turn(ar, 2)
@@ -173,7 +176,7 @@ class Env:
         start = s.score()
         self._make_turn(a, 1)
 
-        if self.turn < MAX_TURN:
+        if self.turn() < MAX_TURN:
             if self.get_snapshot().finished():
                 self._skip()
             sn = self.get_snapshot()

@@ -9,8 +9,8 @@ class QLearningAgent():
   
   def __init__(self,alpha=0.5,epsilon=1,discount=1):
     
-    self.networks = [PolicyNet(learning_rate=alpha, discount=discount) for _ in range(MAX_TURN)]
-    self.replays = [Replay(size=BATCH_SIZE) for _ in range(MAX_TURN)]
+    self.network = PolicyNet(learning_rate=alpha, discount=discount)
+    self.replay = Replay(size=BATCH_SIZE)
     self.epsilon = epsilon
 
   def _flip_coin(self, prob):
@@ -20,21 +20,14 @@ class QLearningAgent():
     if self._flip_coin(self.epsilon):
       actions = state.get_legal_actions()
       return actions[np.random.randint(len(actions))]
-    return self.networks[state.turn - 1].get_action(state)[1]
+    return self.network.get_action(state)[1]
   
   def update_batch(self):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    sm_loss, cnt_loss = 0, 0
-    for i in range(MAX_TURN):
-      value = self.networks[i].update_batch(self.replays[i]).to(device).item()
-      if value != float('inf'):
-        sm_loss += value
-        cnt_loss += 1
-    return sm_loss / cnt_loss
+    return self.network.update_batch(self.replay).to(device).item()
   
   def set_lr(self, lr):
-    for i in range(MAX_TURN):
-      self.networks[i].engine.optim.param_groups[0]['lr'] = lr
+    self.network.engine.optim.param_groups[0]['lr'] = lr
 
-  def update(self, s: SnapShot, a: Action, ns: SnapShot, r: int, d: bool):
-    self.replays[s.turn - 1].add(s, a, ns, r, d, self.networks[s.turn - 1].compute_td_loss([s], [a], [ns], [r], [d]).detach().item())
+  def add(self, s: SnapShot, a: Action, ns: SnapShot, r: int, d: bool):
+    self.replay.add(s, a, ns, r, d)
