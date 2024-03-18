@@ -1,5 +1,7 @@
 _version = 1.0
 
+ROOT = '/home/semen/Development/WarOfVirusesAI'
+
 SAMPLE_SIZE = 10000
 BATCH_SIZE = 100
 MAX_TURN = 3
