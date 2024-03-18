@@ -1,18 +1,16 @@
-import configparser
-
 _version = 1.0
 
-parser = configparser.ConfigParser()
-parser.read("./wovenv/conf.ini")
-
-ROOT = parser['sys']['root']
-SAMPLE_SIZE, BATCH_SIZE, MAX_TURN, N, M = int(parser['params']['sample_size']), int(parser['params']['batch_size']), int(parser['params']['max_turn']), int(parser['params']['n']), int(parser['params']['m'])
+SAMPLE_SIZE = 10000
+BATCH_SIZE = 100
+MAX_TURN = 3
+N = 10
+M = 10
 
 DPATH = f"{ROOT}source/best"
 
 IN_PATH = f"{ROOT}wovenv/.cache/input"
 OUT_PATH = f"{ROOT}wovenv/.cache/output"
 
-coefs = (1, 1, 1, 1, 0, 0)
+coefs = (1, 1, 1, 1)
 
-# (my_cross, my_tower, op_cross, op_tower, my_act, op_act)
+# (my_cross, my_tower, op_cross, op_tower)
