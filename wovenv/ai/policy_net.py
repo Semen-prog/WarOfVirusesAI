@@ -7,17 +7,16 @@ from .dqn_model import DQN
 
 
 class Engine:
-    def __init__(self, learning_rate):
+    def __init__(self):
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.model = DQN(N * M + MAX_TURN, N * M).to(device)
         self.optim = torch.optim.Adam(
-                self.model.parameters(),
-                lr=learning_rate)
+                self.model.parameters())
 
 class PolicyNet:
 
-    def __init__(self, learning_rate=0.5, discount=1) -> None:
-        self.engine   = Engine(learning_rate)
+    def __init__(self, discount=1) -> None:
+        self.engine   = Engine()
         self.discount = discount
         
     def get_action(self, s: SnapShot) -> tuple[float, Action]:

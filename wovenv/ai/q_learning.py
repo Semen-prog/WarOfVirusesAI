@@ -7,9 +7,9 @@ from wovenv import MAX_TURN, BATCH_SIZE
 
 class QLearningAgent():
   
-  def __init__(self,alpha=0.5,epsilon=1,discount=1):
+  def __init__(self,epsilon=1,discount=1):
     
-    self.network = PolicyNet(learning_rate=alpha, discount=discount)
+    self.network = PolicyNet(discount=discount)
     self.replay = Replay(size=BATCH_SIZE)
     self.epsilon = epsilon
 
@@ -25,9 +25,6 @@ class QLearningAgent():
   def update_batch(self):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     return self.network.update_batch(self.replay).to(device).item()
-  
-  def set_lr(self, lr):
-    self.network.engine.optim.param_groups[0]['lr'] = lr
 
   def add(self, s: SnapShot, a: Action, ns: SnapShot, r: int, d: bool):
     self.replay.add(s, a, ns, r, d)

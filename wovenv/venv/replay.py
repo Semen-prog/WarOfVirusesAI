@@ -5,7 +5,7 @@ from torchrl.data.replay_buffers import PrioritizedReplayBuffer, ListStorage
 class Replay:
     def __init__(self, size: int) -> None:
         self.data = dict()
-        self.buffer = PrioritizedReplayBuffer(alpha=0.7, beta=0.9, storage=ListStorage(size))
+        self.buffer = PrioritizedReplayBuffer(alpha=0.6, beta=0.4, storage=ListStorage(size))
 
     def len(self) -> int:
         return len(self.buffer)
